@@ -20,4 +20,4 @@ aws eks --region ap-southeast-2 update-kubeconfig --name eshop-dev-EksCluster
 
 kubectl apply -f aws-auth-cm.yaml
 
-kubectl get nodes --watch
+kubectl get nodes
