@@ -16,7 +16,7 @@ Parameters:
     Description: "Deployment user ARN"
 
 Resources:
-  MyRepository: 
+  ECRRepository: 
     Type: AWS::ECR::Repository
     Properties: 
       RepositoryName: !Sub ${AppName}-${Environment}-ecr
@@ -37,3 +37,8 @@ Resources:
               - "ecr:InitiateLayerUpload"
               - "ecr:UploadLayerPart"
               - "ecr:CompleteLayerUpload"
+
+Outputs:
+  NodeInstanceRole:
+    Description: ECR Repository ARN
+    Value: !GetAtt ECRRepository.Arn

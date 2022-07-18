@@ -21,3 +21,10 @@ aws eks --region ap-southeast-2 update-kubeconfig --name eshop-dev-EksCluster
 kubectl apply -f aws-auth-cm.yaml
 
 kubectl get nodes
+
+aws cloudformation deploy --template app-infra.yaml \
+--stack-name eshop-dev-infra \
+--parameter-overrides \
+AppName=eshop \
+Environment=dev \
+DeploymentUserArn=arn:aws:iam::442623963256:user/cicd
