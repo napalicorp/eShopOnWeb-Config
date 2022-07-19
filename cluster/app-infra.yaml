@@ -16,10 +16,10 @@ Parameters:
     Description: "Deployment user ARN"
 
 Resources:
-  ECRRepository: 
+  WebECRRepository: 
     Type: AWS::ECR::Repository
     Properties: 
-      RepositoryName: !Sub ${AppName}-${Environment}-ecr
+      RepositoryName: !Sub ${AppName}-${Environment}-web
       RepositoryPolicyText: 
         Version: "2012-10-17"
         Statement: 
@@ -37,8 +37,60 @@ Resources:
               - "ecr:InitiateLayerUpload"
               - "ecr:UploadLayerPart"
               - "ecr:CompleteLayerUpload"
+              - "ecr:GetAuthorizationToken"
 
+  PubApiECRRepository: 
+    Type: AWS::ECR::Repository
+    Properties: 
+      RepositoryName: !Sub ${AppName}-${Environment}-pubapi
+      RepositoryPolicyText: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Sid: AllowPushPull
+            Effect: Allow
+            Principal: 
+              AWS: 
+                - !Ref DeploymentUserArn
+            Action: 
+              - "ecr:GetDownloadUrlForLayer"
+              - "ecr:BatchGetImage"
+              - "ecr:BatchCheckLayerAvailability"
+              - "ecr:PutImage"
+              - "ecr:InitiateLayerUpload"
+              - "ecr:UploadLayerPart"
+              - "ecr:CompleteLayerUpload"
+              - "ecr:GetAuthorizationToken"
+
+  SqlECRRepository: 
+    Type: AWS::ECR::Repository
+    Properties: 
+      RepositoryName: !Sub ${AppName}-${Environment}-sql
+      RepositoryPolicyText: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Sid: AllowPushPull
+            Effect: Allow
+            Principal: 
+              AWS: 
+                - !Ref DeploymentUserArn
+            Action: 
+              - "ecr:GetDownloadUrlForLayer"
+              - "ecr:BatchGetImage"
+              - "ecr:BatchCheckLayerAvailability"
+              - "ecr:PutImage"
+              - "ecr:InitiateLayerUpload"
+              - "ecr:UploadLayerPart"
+              - "ecr:CompleteLayerUpload"
+              - "ecr:GetAuthorizationToken"
 Outputs:
-  NodeInstanceRole:
-    Description: ECR Repository ARN
-    Value: !GetAtt ECRRepository.Arn
+  WebEcrRepoArn:
+    Description: ECR Repository ARN for Web
+    Value: !GetAtt WebECRRepository.Arn
+  PubApiEcrRepoArn:
+    Description: ECR Repository ARN for PubApi
+    Value: !GetAtt PubApiECRRepository.Arn
+  SqlApiEcrRepoArn:
+    Description: ECR Repository ARN for SQL
+    Value: !GetAtt SqlECRRepository.Arn
